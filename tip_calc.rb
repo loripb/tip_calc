@@ -193,7 +193,6 @@ class TipCalc
   def send_to_cache(data)
     cache = Memory.new(data)
     $cached_tip = cache.cached?(data)
-    print "works"
   end
 
   def calc_15_percent
