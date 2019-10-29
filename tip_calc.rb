@@ -8,7 +8,7 @@ module Menu
 
       user_input = gets.chomp
 
-      unless user_input == ("q" || "quit")
+      unless user_input == "q"
 
         case user_input
         when "1"
