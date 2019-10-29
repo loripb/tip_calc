@@ -84,15 +84,15 @@ module Questionare
   end
 
   def recommend_10
-    puts "Based on your answers, we reccomend you to tip 10%"
+    puts "Based on your answers, we recommend you to tip 10%"
   end
 
   def recommend_15
-    puts "Based on your answers, we reccomend you to tip 15%"
+    puts "Based on your answers, we recommend you to tip 15%"
   end
 
   def recommend_20
-    puts "Based on your answers, we reccomend you to tip 20%"
+    puts "Based on your answers, we recommend you to tip 20%"
   end
 
   def questions
