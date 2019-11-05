@@ -1,7 +1,7 @@
 module Menu
   def prompt
       puts "
-      1) Change tip percentage (COMING SOON)
+      1) Change tip percentage
       2) Re-calculate with new total
       3) Reset
       q) Quit"
@@ -12,10 +12,13 @@ module Menu
 
         case user_input
         when "1"
+          puts "####################################"
+          puts ""
           change_tip
           prompt
         when "2"
-          puts "~~~~~~~~~~~~~~~~~~~~~~~~~~"
+          puts "####################################"
+          puts ""
           recalc
           prompt
         when "3"
@@ -29,9 +32,26 @@ module Menu
   end
 
   def change_tip
+    tip_questions
+
+    case gets.to_i
+    when 1
+      percent_10
+    when 2
+      percent_15
+    when 3
+      percent_20
+    when 4
+      user_percent
+    else
+      puts "Error:: Invalid input. Please enter a digit."
+    end
   end
 
   def recalc
+    $user_totals.pop
+    $user_totals = [get_total, get_tax]
+
     case $cached_tip
     when "10"
       percent_10
@@ -57,30 +77,37 @@ end
 
 module Questionare
   def rate
-    puts "Enter: 1-Poor 2-Fair 3-Good 4-Excellent"
+    "Enter: 1-Poor 2-Fair 3-Good 4-Excellent"
   end
 
-  def get_service
+  def tip_questions
+    puts "how much would you like to tip?"
+    puts "
+      1) 10%
+      2) 15%
+      3) 20%
+      4) Enter your own amount"
+  end
+
+  def service
     puts "How was the service?"
-    rate
+    puts rate
     gets.to_i
   end
 
-  def get_enjoyment
+  def enjoyment
     puts "How well did you enjojy your experience?"
-    rate
+    puts rate
     gets.to_i
   end
 
-  def get_total
+  def total
     puts "Without counting the tax, how much was your total?"
-    gets.to_f
   end
 
-  def get_tax
+  def tax
     puts "How much is the tax?"
     puts "(include any other fee, like delivery fee or gratuity)"
-    gets.to_f
   end
 
   def recommend_10
@@ -97,9 +124,15 @@ module Questionare
 
   def questions
     include Calculations
-    service_rating   = get_service
-    enjoyment_rating = get_enjoyment
+    include Inputs
+
+    service_rating   = service
+
+    enjoyment_rating = enjoyment
+
     overall_rating   = service_rating + enjoyment_rating
+
+    $user_totals = [get_total, get_tax]
 
     case overall_rating
     when 2..3
@@ -116,37 +149,46 @@ module Questionare
 
 end
 
+module Inputs
+  include Questionare
+  def get_total
+    total
+    gets.to_f
+  end
+
+  def get_tax
+    tax
+    gets.to_f
+  end
+
+  def get_input
+    gets.to_i
+  end
+end
+
 module Calculations
   def percent_10
-    user_total = get_total
-    user_tax   = get_tax
-    user = TipCalc.new(user_total, user_tax)
+    user = TipCalc.new($user_totals[0], $user_totals[1])
     user.calc_10_percent
   end
 
   def percent_15
-    user_total = get_total
-    user_tax   = get_tax
-    user = TipCalc.new(user_total, user_tax)
+    user = TipCalc.new($user_totals[0], $user_totals[1])
     user.calc_15_percent
   end
 
   def percent_20
-    user_total = get_total
-    user_tax   = get_tax
-    user = TipCalc.new(user_total, user_tax)
+    user = TipCalc.new($user_totals[0], $user_totals[1])
     user.calc_20_percent
   end
 
   def user_percent
-    user_total = get_total
-    user_tax   = get_tax
-    user = TipCalc.new(user_total, user_tax)
+    user = TipCalc.new($user_totals[0], $user_totals[1])
     user.calc_custom_percent
   end
 end
 
-class Memory
+class TipCache
   attr_accessor :tip_cache, :last_used_percentage, :percentage
   def initialize(percentage= 15)
     @percentage           = percentage
@@ -159,7 +201,7 @@ class Memory
   end
 
   def cached?(percentage)
-    if tip_cache.has_key?(percentage)
+    if @tip_cache.has_key?(percentage)
       set_last_used(percentage)
     else
       @tip_cache.store("percentage", percentage)
@@ -190,8 +232,8 @@ class TipCalc
     puts "$#{grand_total.ceil(2)}"
   end
 
-  def send_to_cache(data)
-    cache = Memory.new(data)
+  def send_tip_to_cache(data)
+    cache = TipCache.new(data)
     $cached_tip = cache.cached?(data)
   end
 
@@ -199,32 +241,32 @@ class TipCalc
     @tip = 0.15 * total
     total_promt
 
-    send_to_cache(15)
+    send_tip_to_cache(15)
   end
 
   def calc_10_percent
     @tip = 0.10 * total
     total_promt
 
-    send_to_cache(10)
+    send_tip_to_cache(10)
   end
 
   def calc_20_percent
     @tip = 0.20 * total
     total_promt
 
-    send_to_cache(20)
+    send_tip_to_cache(20)
   end
 
   def calc_custom_percent
     puts "Enter your desired percent amount:"
     percentage = gets
-    Memory.new(percentage)
+    TipCache.new(percentage)
 
     @tip = ( percentage.to_f / 100) * total
     total_promt
 
-    send_to_cache(percentage)
+    send_tip_to_cache(percentage)
   end
 
 end
