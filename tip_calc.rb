@@ -25,7 +25,9 @@ module Menu
         when "3"
           start
         else
+          puts ''
           puts "Error:: Not a valid input."
+          prompt
         end
 
       end
