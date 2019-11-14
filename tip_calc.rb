@@ -163,7 +163,7 @@ module Questionare
 end
 
 module Inputs
-  # gets user input, then checks for digits and converts string to an float
+  # gets user input, then checks for digits and converts string to a float
   def get_input
     check(gets)
   end
