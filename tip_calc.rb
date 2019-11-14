@@ -54,8 +54,14 @@ module Menu
 #re-calculates same tip percent with new totals
   def recalc
     # Removes previous total and tax, then promts user to enter new info
+    total
+    user_total = get_input
+
+    tax
+    user_tax = get_input
+
     $user_totals.pop
-    $user_totals = [get_total, get_tax]
+    $user_totals = [user_total, user_tax]
 
     # Gets previous selected tip from cache and calculates correct percentage
     case $cached_tip
@@ -162,7 +168,7 @@ module Inputs
     input = gets
 
     if input_check(input) == true
-      input.to_i
+      input.to_f
     end
   end
 end
