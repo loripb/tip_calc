@@ -79,6 +79,7 @@ module Menu
 end
 
 module Questionare
+
   def rate
     "Enter: 1-Poor 2-Fair 3-Good 4-Excellent"
   end
@@ -95,13 +96,11 @@ module Questionare
   def service
     puts "How was the service?"
     puts rate
-    gets.to_i
   end
 
   def enjoyment
     puts "How well did you enjojy your experience?"
     puts rate
-    gets.to_i
   end
 
   def total
@@ -126,16 +125,21 @@ module Questionare
   end
 
   def questions
-    include Calculations
-    include Inputs
+    service    
+    service_rating   = get_input
 
-    service_rating   = service
-
-    enjoyment_rating = enjoyment
+    enjoyment
+    enjoyment_rating = get_input
 
     overall_rating   = service_rating + enjoyment_rating
+ 
+    total
+    user_total = get_input
 
-    $user_totals = [get_total, get_tax]
+    tax
+    user_tax = get_input
+
+    $user_totals = [user_total, user_tax]
 
     case overall_rating
     when 2..3
@@ -153,19 +157,13 @@ module Questionare
 end
 
 module Inputs
-  include Questionare
-  def get_total
-    total
-    gets.to_f
-  end
-
-  def get_tax
-    tax
-    gets.to_f
-  end
-
+  # gets user input, then checks for digits and converts string to an integer
   def get_input
-    gets.to_i
+    input = gets
+
+    if input_check(input) == true
+      input.to_i
+    end
   end
 end
 
@@ -188,6 +186,20 @@ module Calculations
   def user_percent
     user = TipCalc.new($user_totals[0], $user_totals[1])
     user.calc_custom_percent
+  end
+end
+
+module Error
+  def input_check(str) # checks is string only includes digits
+    unless str.scan(/^\d+$/)
+      INPUT_ERROR
+    else 
+      true
+    end
+  end
+
+  def INPUT_ERROR
+    puts "::ERROR:: Not a valid input! Must be an integer."
   end
 end
 
@@ -275,8 +287,7 @@ class TipCalc
   end
 
 end
+include Inputs, Questionare, Menu, Error, Calculations
 
-include Questionare
-include Menu
 
 start
