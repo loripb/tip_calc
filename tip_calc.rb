@@ -163,7 +163,7 @@ module Questionare
 end
 
 module Inputs
-  # gets user input, then checks for digits and converts string to an integer
+  # gets user input, then checks for digits and converts string to an float
   def get_input
     check(gets)
   end
@@ -201,7 +201,7 @@ module Calculations
 end
 
 module Error
-  def input_check(str) # checks is string only includes digits
+  def input_check(str) # checks is string only includes digits and .
     case str
     when /^[0-9.]+$/
       true
