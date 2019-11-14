@@ -55,13 +55,13 @@ module Menu
   def recalc
     # Removes previous total and tax, then promts user to enter new info
     total
-    user_total = get_input
+    user_tax = get_input
 
     tax
     user_tax = get_input
 
     $user_totals.pop
-    $user_totals = [user_total, user_tax]
+    $user_totals = [user_input, user_tax]
 
     # Gets previous selected tip from cache and calculates correct percentage
     case $cached_tip
@@ -165,12 +165,17 @@ end
 module Inputs
   # gets user input, then checks for digits and converts string to an integer
   def get_input
-    input = gets
+    check(gets)
+  end
 
+  def check(input)
     if input_check(input) == true
-      input.to_f
+      input = input.to_f
+    else
+      get_input
     end
   end
+    
 end
 
 module Calculations
@@ -197,15 +202,17 @@ end
 
 module Error
   def input_check(str) # checks is string only includes digits
-    unless str.scan(/^\d+$/)
-      INPUT_ERROR
-    else 
+    case str
+    when /^[0-9.]+$/
       true
+    else
+      input_error
     end
   end
 
-  def INPUT_ERROR
+  def input_error
     puts "::ERROR:: Not a valid input! Must be an integer."
+    puts ''
   end
 end
 
