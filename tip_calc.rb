@@ -229,7 +229,7 @@ class TipCache
     last_used_percentage = data.to_s
   end
 
-# If the percentage in the cache, set to last use. Or else store in the cache
+# If the percentage is in the cache, set to last used. If not, stores it in the cache
   def cached?(percentage)
     if @tip_cache.has_key?(percentage)
     else
