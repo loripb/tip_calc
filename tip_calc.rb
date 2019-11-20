@@ -53,7 +53,7 @@ module Menu
 
 #re-calculates same tip percent with new totals
   def recalc
-    # Removes previous total and tax, then promts user to enter new info
+    # Removes previous total and tax, then prompts user to enter new info
     total
     user_tax = get_input
 
@@ -131,14 +131,14 @@ module Questionare
   end
 
   def questions
-    service    
+    service
     service_rating   = get_input
 
     enjoyment
     enjoyment_rating = get_input
 
     overall_rating   = service_rating + enjoyment_rating
- 
+
     total
     user_total = get_input
 
@@ -175,7 +175,7 @@ module Inputs
       get_input
     end
   end
-    
+
 end
 
 module Calculations
