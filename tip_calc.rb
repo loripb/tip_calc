@@ -201,7 +201,7 @@ module Calculations
 end
 
 module Error
-  def input_check(str) # checks is string only includes digits and .
+  def input_check(str) # checks if string only includes digits and .
     case str
     when /^[0-9.]+$/
       true
